@@ -1,5 +1,5 @@
 [project]
-name = "IKB_MCP_Server"
+name = "InsightsLibrary"
 version = "0.1.0"
 description = "A free, plug-and-play knowledge base. Built-in with 10,000+ high-quality insight reports, packaged as MCP Server, and secure local data storage."
 authors = [
