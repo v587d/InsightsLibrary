@@ -1,0 +1,14 @@
+# 原始规则
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.venv/
+*.log
+.env
+
+# 补充虚拟环境别名（可选）
+venv/
+env/
