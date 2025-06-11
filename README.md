@@ -24,7 +24,7 @@ pip install uv
 
 ```BASH
 git clone https://github.com/v587d/InsightsLibrary.git
-cd insights-library
+cd InsightsLibrary
 ```
 
 #### 2. Create virtual environment
@@ -64,7 +64,7 @@ nano .env     # Mac/Linux
       "command": "uv",
       "args": [
         "--directory",
-        "", 
+        "<Your Project Root Directory!!!>", 
         "run",
         "ikb_mcp_server.py"
       ]
