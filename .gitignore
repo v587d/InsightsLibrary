@@ -11,6 +11,7 @@ wheels/
 .idea/
 *.iml
 modules.xml
+test.py
 
 # 补充虚拟环境别名（可选）
 venv/
