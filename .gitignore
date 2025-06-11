@@ -8,6 +8,9 @@ wheels/
 .venv/
 *.log
 .env
+.idea/
+*.iml
+modules.xml
 
 # 补充虚拟环境别名（可选）
 venv/
