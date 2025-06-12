@@ -12,6 +12,8 @@ wheels/
 *.iml
 modules.xml
 test.py
+.query_db.py
+.python-version
 
 # 补充虚拟环境别名（可选）
 venv/

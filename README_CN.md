@@ -10,6 +10,7 @@
 2. 🦉永久免费，无需考虑浪费心智收集报告资源。欢迎大家通过`issue`分享可靠的、无版权纠纷研报资源。
 3. 📢承诺至少每周一次研报资源，但改bug就看个人心情了，毕竟我不是程序员🤭。
 
+[![introduction video](https://i9.ytimg.com/vi_webp/Mb8KbPo7EVM/mq2.webp?sqp=CKyUqsIG-oaymwEmCMACELQB8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGGUgZShlMA8=&rs=AOn4CLCU6ruFrPJY5usKxhGMG4EsHbwvDw)][https://youtu.be/Mb8KbPo7EVM]
 
 ## 安装方法（对无编程基础用户友好）
 

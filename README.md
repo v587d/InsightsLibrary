@@ -1,12 +1,15 @@
 # Insights Knowledge Base(IKB) MCP Server
 [>>>中文版](https://github.com/v587d/InsightsLibrary/blob/main/README_CN.md)
-> A free, plug-and-play knowledge base. Built-in with 10,000+ high-quality insight reports, packaged as MCP Server, and secure local data storage.
+> 🍭A free, plug-and-play knowledge base. Built-in with 10,000+ high-quality insight reports, packaged as MCP Server, and secure local data storage.
 
 ⚠️⚠️ All collected reports in this project come from free resources on official research report websites. ⚠️⚠️
 ## Features
 1. 🍾 No configuration needed, truly plug-and-play. For private document parsing, configure VLM models and parameters in `.env` (e.g., `VLM_MODEL_NAME=qwen2.5-vl-72b-instruct`).
 2. 🦉 Permanently free - no need to waste effort collecting report resources. Welcome to share reliable, copyright-free report sources via `issues`.
 3. 📢 Committed to weekly report updates, but bug fixes depend on my mood (I'm not a programmer 🤭).
+
+
+[![introduction video](https://i9.ytimg.com/vi_webp/Mb8KbPo7EVM/mq2.webp?sqp=CKyUqsIG-oaymwEmCMACELQB8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGGUgZShlMA8=&rs=AOn4CLCU6ruFrPJY5usKxhGMG4EsHbwvDw)][https://youtu.be/Mb8KbPo7EVM]
 
 ## Installation (Beginner-Friendly)
 

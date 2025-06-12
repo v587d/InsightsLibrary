@@ -2,7 +2,7 @@ import os
 import platform
 from enum import Enum
 from urllib.parse import quote
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Optional
 from abc import ABC, abstractmethod
 from datetime import datetime
 from unicodedata import normalize
@@ -118,6 +118,22 @@ class BaseAgent(ABC):
             logger.error(f"File path conversion failed: {e}")
             return None
 
+    @staticmethod
+    def _full_path(file_path: str) -> Optional[str]:
+        # Convert file path to complete absolute path for Windows and macOS
+        try:
+            if not file_path or not isinstance(file_path, str):
+                return None
+            custom_root = os.path.dirname(os.path.abspath(__file__))
+            file_name = os.path.basename(file_path)
+            full_path = os.path.join(custom_root, "library_files", file_name)
+            if os.path.isfile(full_path):
+                return os.path.normpath(full_path)
+            return None
+        except Exception as e:
+            logger.error(f"File path conversion failed for '{file_path}': {e}")
+            return None
+
 class BaseRetriever(BaseAgent):
     def __init__(self, max_results: int = 1):
         super().__init__()
@@ -197,9 +213,9 @@ class FileRetriever(BaseRetriever):
                 logger.error("No file records in database")
                 return {"results": [], "current_page": idx, "total_pages": 0, "total_matches": 0}
 
-            # Precompute URIs
+            # Full path
             for file in files:
-                file["uri"] = self._path2uri(file.get("file_path"))
+                file["full_path"] = self._full_path(file.get("file_path"))
 
             # Process files with optimized filtering
             results = []
@@ -243,7 +259,7 @@ class FileRetriever(BaseRetriever):
                     "content": content,
                     "published_by": publisher,
                     "published_date": file.get("published_date"),
-                    "file_uri": file.get("uri"),
+                    "file_full_path": file.get("full_path"),
                     "matched_keywords": matched_kws
                 })
 
@@ -310,7 +326,7 @@ class ContentRetriever(BaseRetriever):
             all_files = self.file_model.get_all_files()
             file_info_map = {file["file_id"]: file for file in all_files}
             for file in file_info_map.values():
-                file["uri"] = self._path2uri(file.get("file_path"))
+                file["full_path"] = self._full_path(file.get("file_path"))
 
             # Process contents with optimized filtering
             results = []
@@ -362,7 +378,7 @@ class ContentRetriever(BaseRetriever):
                     "page_keywords": content_keywords,
                     "published_by": publisher,
                     "published_date": file_info.get("published_date"),
-                    "file_uri": file_info.get("uri"),
+                    "file_full_path": file_info.get("full_path"),
                     "matched_keywords": matched_kws
                 })
 
@@ -402,4 +418,3 @@ class ContentRetriever(BaseRetriever):
 
 if __name__ == "__main__":
     pass
-
