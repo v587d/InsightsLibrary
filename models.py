@@ -50,9 +50,7 @@ class FileModel:
         """
         try:
             result = self.files.get(self.query.file_path == file_path) # type: ignore
-            if result:
-                logger.debug(f"找到文件记录: {file_path}")
-            else:
+            if not result:
                 logger.debug(f"未找到文件记录: {file_path}")
             return result
         except Exception as e:
@@ -70,9 +68,7 @@ class FileModel:
         """
         try:
             result = self.files.get(self.query.file_id == file_id) # type: ignore
-            if result:
-                logger.debug(f"找到文件记录: {file_id}")
-            else:
+            if not result:
                 logger.debug(f"未找到文件记录: {file_id}")
             return result
         except Exception as e:
