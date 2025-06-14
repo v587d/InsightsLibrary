@@ -40,7 +40,7 @@ class TinyDBManager:
         for doc in files_table.all():
             doc_id = doc.doc_id
             cls._file_index[doc['file_id']] = doc_id
-            cls._file_index[doc['file_path']] = doc_id
+            cls._file_index[os.path.normpath(doc['file_path'])] = doc_id
 
         # Build content index
         for doc in contents_table.all():
@@ -58,14 +58,21 @@ class FileModel:
 
     def get_file_by_path(self, file_path: str) -> Optional[Dict]:
         """Retrieve file record by file path using index."""
+        normalized_path = None
         try:
-            doc_id = self.manager._file_index.get(file_path)
+            # Normalize file path for consistency
+            normalized_path = os.path.normpath(file_path)
+            doc_id = self.manager._file_index.get(normalized_path)
             if doc_id is None:
-                logger.warning(f"File record not found: {file_path}")
+                logger.warning(f"File record not found: {normalized_path}")
                 return None
-            return self.files.get(doc_id=doc_id)
+            file_record = self.files.get(doc_id=doc_id)
+            if file_record is None:
+                logger.warning(f"No file record found for doc_id: {doc_id}")
+                return None
+            return file_record
         except Exception as e:
-            logger.error(f"Failed to query file: {file_path}, error: {e}")
+            logger.error(f"Failed to query file: {normalized_path}, error: {e}")
             raise RuntimeError(f"File query failed: {e}") from e
 
     def get_file_by_id(self, file_id: str) -> Optional[Dict]:
@@ -93,15 +100,17 @@ class FileModel:
             topic: str = "",
             published_date: str = ""
     ) -> int:
-        """Create a new file record."""
-        if self.get_file_by_path(file_path):
-            logger.warning(f"Failed to create file, path already exists: {file_path}")
-            raise ValueError(f"File path already exists: {file_path}")
+        """Create a new file record and update index."""
+        # Normalize file path for consistency
+        normalized_path = os.path.normpath(file_path)
+        if self.get_file_by_path(normalized_path):
+            logger.warning(f"Failed to create file, path already exists: {normalized_path}")
+            raise ValueError(f"File path already exists: {normalized_path}")
 
         file_id = str(uuid.uuid4())
         file_data = {
             "file_id": file_id,
-            "file_path": file_path,
+            "file_path": normalized_path,
             "file_name": file_name,
             "file_hash": file_hash,
             "last_modified": last_modified,
@@ -119,13 +128,17 @@ class FileModel:
 
         try:
             doc_id = self.files.insert(file_data)
+            # Update file index
+            self.manager._file_index[file_id] = doc_id
+            self.manager._file_index[normalized_path] = doc_id
+            logger.info(f"Created file record and updated index for: {normalized_path}, doc_id: {doc_id}")
             return doc_id
         except Exception as e:
-            logger.error(f"Failed to create file: {file_path}, error: {e}")
+            logger.error(f"Failed to create file: {normalized_path}, error: {e}")
             raise RuntimeError(f"File creation failed: {e}") from e
 
     def update_file(self, file_id: str, **kwargs: Any) -> None:
-        """Dynamically update file record."""
+        """Dynamically update file record and sync index if file_path changes."""
         updates = {k: v for k, v in kwargs.items() if v is not None}
         if not updates:
             logger.warning(f"Failed to update file, no valid fields: {file_id}")
@@ -135,6 +148,20 @@ class FileModel:
             logger.warning(f"Updating operation status: {file_id} => {kwargs['opt_msg']}")
 
         try:
+            file_record = self.get_file_by_id(file_id)
+            if not file_record:
+                logger.warning(f"Failed to update file, not found: {file_id}")
+                raise ValueError(f"File not found: {file_id}")
+
+            # If file_path is updated, sync _file_index
+            old_path = file_record['file_path']
+            new_path = updates.get('file_path')
+            if new_path and new_path != old_path:
+                new_path = os.path.normpath(new_path)
+                self.manager._file_index.pop(os.path.normpath(old_path), None)
+                self.manager._file_index[new_path] = file_record.doc_id # type: ignore
+                logger.info(f"Updated file index: {old_path} -> {new_path}, doc_id: {file_record.doc_id}") # type: ignore
+
             updated = self.files.update(updates, self.query.file_id == file_id)  # type: ignore
             if not updated:
                 logger.warning(f"Failed to update file, not found: {file_id}")
@@ -143,19 +170,91 @@ class FileModel:
             logger.error(f"Failed to update file: {file_id}, error: {e}")
             raise RuntimeError(f"File update failed: {e}") from e
 
-    def delete_file(self, file_id: str) -> None:
-        """Delete file record."""
+    def update_pages_aigc_status(
+            self,
+            file_id: str,
+            page_numbers: List[int],  # Changed to page_numbers
+            is_aigc: bool = True
+    ) -> bool:
+        """
+        Update AIGC status for specific pages in a file by page number
+
+        Args:
+            file_id: Target file ID
+            page_numbers: List of page numbers to update
+            is_aigc: AIGC status to set (default: True)
+
+        Returns:
+            True if update successful, False otherwise
+        """
         try:
+            # Locate file by ID using index
+            doc_id = self.manager._file_index.get(file_id)
+            if not doc_id:
+                logger.warning(f"File not found: {file_id}")
+                return False
+
+            file_record = self.files.get(doc_id=doc_id)
+            if not file_record:
+                logger.warning(f"File record missing: {file_id}")
+                return False
+
+            pages = file_record.get('pages', [])
+            if not pages:
+                logger.warning(f"No pages in file: {file_id}")
+                return False
+
+            # Create mapping: page_number → index
+            page_num_to_idx = {}
+            for idx, page in enumerate(pages):
+                if 'page_number' in page:
+                    page_num_to_idx[page['page_number']] = idx
+
+            updated = False
+            # Update specified pages
+            for page_num in page_numbers:
+                if page_num in page_num_to_idx:
+                    idx = page_num_to_idx[page_num]
+                    pages[idx]['is_aigc'] = is_aigc # type: ignore
+                    updated = True
+                else:
+                    logger.warning(f"Page {page_num} not found in {file_id}")
+
+            if updated:
+                # Update only pages field
+                self.files.update({'pages': pages}, doc_ids=[doc_id])
+                return True
+
+            return False
+
+        except Exception as e:
+            logger.error(f"Update failed: {file_id}, error: {str(e)}")
+            return False
+
+    def delete_file(self, file_id: str) -> None:
+        """Delete file record and remove from index."""
+        try:
+            file_record = self.get_file_by_id(file_id)
+            if not file_record:
+                logger.warning(f"Failed to delete file, not found: {file_id}")
+                raise ValueError(f"File not found: {file_id}")
+
             remove = self.files.remove(self.query.file_id == file_id)  # type: ignore
             if not remove:
                 logger.warning(f"Failed to delete file, not found: {file_id}")
                 raise ValueError(f"File not found: {file_id}")
+
+            # Remove from file index
+            file_path = file_record['file_path']
+            self.manager._file_index.pop(file_id, None)
+            self.manager._file_index.pop(os.path.normpath(file_path), None)
+            logger.info(f"Removed file index entries for file_id: {file_id}, file_path: {file_path}")
         except Exception as e:
             logger.error(f"Failed to delete file: {file_id}, error: {e}")
             raise RuntimeError(f"File deletion failed: {e}") from e
 
-    def delete_file_pages(self, file_id: str) -> None:
-        """Delete all page records for a file."""
+    def clean_up_file_pages(self, file_id: str) -> None:
+        """Clean up all page records for a file."""
         try:
             updated = self.files.update({"pages": []}, self.query.file_id == file_id)  # type: ignore
             if not updated:
@@ -193,35 +292,37 @@ class FileModel:
 
     def is_file_changed(self, file_path: str) -> bool:
         """Check if file has changed."""
-        if not os.path.exists(file_path):
-            logger.warning(f"File deleted or not found: {file_path}")
+        # Normalize file path for consistency
+        normalized_path = os.path.normpath(file_path)
+        if not os.path.exists(normalized_path):
+            logger.warning(f"File deleted or not found: {normalized_path}")
             return True
 
         try:
-            file_record = self.get_file_by_path(file_path)
+            file_record = self.get_file_by_path(normalized_path)
         except RuntimeError:
-            logger.warning(f"File status check failed, considered changed: {file_path}")
+            logger.warning(f"File status check failed, considered changed: {normalized_path}")
             return True
 
         if not file_record:
-            logger.warning(f"New file detected: {file_path}")
+            logger.warning(f"New file detected: {normalized_path}")
             return True
 
         try:
-            current_hash = self.calculate_md5(file_path)
-            current_mtime = os.path.getmtime(file_path)
+            current_hash = self.calculate_md5(normalized_path)
+            current_mtime = os.path.getmtime(normalized_path)
 
             if file_record["file_hash"] != current_hash:
-                logger.warning(f"File hash changed: {file_path}")
+                logger.warning(f"File hash changed: {normalized_path}")
                 return True
 
             if abs(file_record["last_modified"] - current_mtime) > 0.001:
-                logger.warning(f"File modification time changed: {file_path}")
+                logger.warning(f"File modification time changed: {normalized_path}")
                 return True
 
             return False
         except Exception as e:
-            logger.error(f"Failed to check file change: {file_path}, error: {e}")
+            logger.error(f"Failed to check file change: {normalized_path}, error: {e}")
             return True
 
     @staticmethod
@@ -256,7 +357,7 @@ class ContentModel:
             keywords: List[str] = None,
             **kwargs
     ) -> str:
-        """Create a new content record."""
+        """Create a new content record and update index."""
         page_id = str(uuid.uuid4())
         content_data = {
             "page_id": page_id,
@@ -272,10 +373,14 @@ class ContentModel:
         }
 
         try:
-            self.contents.insert(content_data)
+            doc_id = self.contents.insert(content_data)
+            # Update content index
+            self.manager._content_index[page_id] = doc_id
+            self.manager._content_index.setdefault(file_id, set()).add(doc_id)
+            logger.info(f"Created content record and updated index for page_id: {page_id}, file_id: {file_id}, doc_id: {doc_id}")
             return page_id
         except Exception as e:
-            logger.error(f"Failed to create content: {e}")
+            logger.error(f"Failed to create content: page_id: {page_id}, error: {e}")
             raise RuntimeError(f"Content creation failed: {e}") from e
 
     def update_content(self, page_id: str, **kwargs) -> None:
@@ -285,9 +390,12 @@ class ContentModel:
         update_data["updated_at"] = datetime.now().isoformat()
 
         try:
-            self.contents.update(update_data, self.query.page_id == page_id)  # type: ignore
+            updated = self.contents.update(update_data, self.query.page_id == page_id)  # type: ignore
+            if not updated:
+                logger.warning(f"Failed to update content, not found: page_id: {page_id}")
+                raise ValueError(f"Content not found: {page_id}")
         except Exception as e:
-            logger.error(f"Failed to update content: {e}")
+            logger.error(f"Failed to update content: page_id: {page_id}, error: {e}")
             raise RuntimeError(f"Content update failed: {e}") from e
 
     def get_content_by_page_id(self, page_id: str) -> Optional[Dict]:
@@ -317,37 +425,62 @@ class ContentModel:
             return []
 
     def delete_content(self, page_id: str) -> bool:
-        """Delete content record by page ID."""
+        """Delete content record by page ID and remove from index."""
         try:
+            content_record = self.get_content_by_page_id(page_id)
+            if not content_record:
+                logger.warning(f"Failed to delete content, not found: page_id: {page_id}")
+                return False
+
             removed = self.contents.remove(self.query.page_id == page_id)  # type: ignore
             if not removed:
                 logger.warning(f"Failed to delete content, not found: page_id: {page_id}")
-            return bool(removed)
+                return False
+
+            # Remove from content index
+            file_id = content_record['file_id']
+            doc_id = self.manager._content_index.pop(page_id, None)
+            if doc_id and file_id in self.manager._content_index:
+                self.manager._content_index[file_id].discard(doc_id)
+                if not self.manager._content_index[file_id]:
+                    self.manager._content_index.pop(file_id)
+            logger.info(f"Removed content index entries for page_id: {page_id}, file_id: {file_id}")
+            return True
         except Exception as e:
             logger.error(f"Failed to delete content: page_id: {page_id}, error: {e}")
             return False
 
     def delete_contents_by_file_id(self, file_id: str) -> int:
-        """Delete all content records by file ID."""
+        """Delete all content records by file ID and remove from index."""
         try:
+            contents = self.get_contents_by_file_id(file_id)
             removed_count = len(self.contents.remove(self.query.file_id == file_id))  # type: ignore
             if not removed_count:
                 logger.warning(f"Failed to delete contents, no records found: file_id: {file_id}")
+                return 0
+
+            # Remove from content index
+            for content in contents:
+                page_id = content['page_id']
+                self.manager._content_index.pop(page_id, None)
+            self.manager._content_index.pop(file_id, None)
+            logger.info(f"Removed {removed_count} content index entries for file_id: {file_id}")
             return removed_count
         except Exception as e:
             logger.error(f"Failed to delete contents: file_id: {file_id}, error: {e}")
             return 0
 
 if __name__ == "__main__":
-    import time
-    # Initialize models
-    start_time = time.time()
-    file_model = FileModel()
-    content_model = ContentModel()
-    file = file_model.get_file_by_path("library_files\\2024年中国奢侈品市场-逆水行舟，穿越周期[BAIN-20250121].pdf")
-    # file = file_model.get_file_by_id("c6ab4950-89b5-48df-b853-cd76e431de0b")
-    content = content_model.get_content_by_page_id("0d5dda73-1764-437b-8084-64872200a739")
-    end_time = time.time()
-    res = file["file_id"]
-    print(res)
-    print(end_time - start_time)
+    # import time
+    # # Initialize models
+    # start_time = time.time()
+    # file_model = FileModel()
+    # content_model = ContentModel()
+    # file = file_model.get_file_by_path("library_files\\2024年中国奢侈品市场-逆水行舟，穿越周期[BAIN-20250121].pdf")
+    # # file = file_model.get_file_by_id("c6ab4950-89b5-48df-b853-cd76e431de0b")
+    # content = content_model.get_content_by_page_id("0d5dda73-1764-437b-8084-64872200a739")
+    # end_time = time.time()
+    # res = file["file_id"]
+    # print(res)
+    # print(end_time - start_time)
+    pass

@@ -8,8 +8,10 @@
 2. 🦉 Permanently free - no need to waste effort collecting report resources. Welcome to share reliable, copyright-free report sources via `issues`.
 3. 📢 Committed to weekly report updates, but bug fixes depend on my mood (I'm not a programmer 🤭).
 
+[![introduction video][thumbnail]][video]
 
-[![introduction video](https://i9.ytimg.com/vi_webp/Mb8KbPo7EVM/mq2.webp?sqp=CKyUqsIG-oaymwEmCMACELQB8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGGUgZShlMA8=&rs=AOn4CLCU6ruFrPJY5usKxhGMG4EsHbwvDw)][https://youtu.be/Mb8KbPo7EVM]
+[thumbnail]: https://i9.ytimg.com/vi_webp/Mb8KbPo7EVM/mq2.webp?sqp=CKyUqsIG-oaymwEmCMACELQB8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGGUgZShlMA8=&rs=AOn4CLCU6ruFrPJY5usKxhGMG4EsHbwvDw
+[video]: https://youtu.be/Mb8KbPo7EVM
 
 ## Installation (Beginner-Friendly)
 
@@ -93,9 +95,9 @@ ikb_mcp_server.py
 ```Bash
 # cd to project root
 # Activate virtual environment
-uv run decoder.py
+uv run extractor.py
 # Wait for completion
-uv run large_models.py
+uv run Recognizer.py
 # Wait for completion
 # Data is now updated in the database
 ```
