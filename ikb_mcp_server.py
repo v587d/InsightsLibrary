@@ -23,7 +23,7 @@ async def search_report_profile(
     ️⚠️注意：当LLM引用该方法返回的结果时，必须用markdown格式明确、醒目告知用户引自哪篇报告和具体访问地址！
     比如“**观点引自《Open source technology in the age of AI》**
     ```Path
-     <如果"file_uri"不为空，这里完整填入file_uri>
+     <如果"file_full_path"不为空，这里完整填入file_full_path>
      ```”
 
     参数：
@@ -82,7 +82,7 @@ async def search_content_detail(
     ⚠️注意：当LLM引用该方法返回的结果时，必须用markdown格式明确、醒目告知用户引自哪篇报告和具体访问地址！
     比如“**观点引自《21世纪CEO的成功法则》第10、16页**
     ```Path
-     <如果"file_uri"不为空，这里完整填入file_uri>
+     <如果"file_full_path"不为空，这里完整填入file_full_path>
      ```”
 
     参数：
@@ -133,7 +133,4 @@ async def search_content_detail(
 
 if __name__ == "__main__":
     mcp.run(transport="stdio")
-    # import asyncio
-    # res = asyncio.run(search_report_profile(["ai agent"], end_date="2026-01-01"))
-    # print(res)
 

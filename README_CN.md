@@ -2,18 +2,100 @@
 
 [>>>English Version](https://github.com/v587d/InsightsLibrary/blob/main/README.md)
 
->🍭一个免费的、即插即用的知识库。内置10,000+份高质量洞察报告(Research Report、Insight Report)、封装成MCP Server、本地数据安全存储。
+>🍭一个免费的、即插即用的知识库。内置10,000+份高质量洞察报告(Research Report、Insights Report)、封装成MCP Server、本地数据安全存储。
 
 ⚠️⚠️ 本项目所有采集的研报，均来自各研报官网免费资源。⚠️⚠️
 ## 特点
 1. 🍾无需任何配置，主打一个即插即用。若您需解析私有文档，`.env` 可配置VLM模型和相关参数，如：`VLM_MODEL_NAME=qwen2.5-vl-72b-instruct`。
 2. 🦉永久免费，无需考虑浪费心智收集报告资源。欢迎大家通过`issue`分享可靠的、无版权纠纷研报资源。
-3. 📢承诺至少每周一次研报资源，但改bug就看个人心情了，毕竟我不是程序员🤭。
+3. 📢承诺至少每周一次研报资源，但改bug就看个人心情了，毕竟我不是工程师🤭。
 
-[![introduction video][thumbnail]][video]
+## 截至于6月17日的优化
+1. 💡优化`models.py`: 数据查询效率提升1,000%
+2. 💡优化`extractor.py`: 略微提升PDF抽取效率
+3. 💡优化`recognizer.py`: 图片理解效率提升50%
+4. 💡优化`ikb_mcp_server.py`: 
+   - 新增分页
+   - 显示引用文件本地所在路径
+5. 💡新增 MIT License
+6. **📦项目整体压缩包体积下降约 50%**
+7. 💡简化处理私有文档流程
+8. 💡修复其他已发现的bugs
 
-[thumbnail]: https://i9.ytimg.com/vi_webp/Mb8KbPo7EVM/mq2.webp?sqp=CKyUqsIG-oaymwEmCMACELQB8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGGUgZShlMA8=&rs=AOn4CLCU6ruFrPJY5usKxhGMG4EsHbwvDw
-[video]: https://youtu.be/Mb8KbPo7EVM
+## 未来工作方向
+1. 加入嵌入模型，并整合进`@mcp.tool()`
+2. 持续更新报告
+
+## 最新报告概况
+```JSON
+{
+    "statistics": {
+        "total_files": 61,
+        "total_pages": 3031,
+        "unique_publishers": 7,
+        "unique_topics": 45,
+        "last_updated": "2025-06-17T10:36:52.437453"
+    },
+    "details": {
+        "publishers": [
+            "Accenture",
+            "BAIN",
+            "BCG",
+            "CBS",
+            "McKinsey",
+            "PWC",
+            "亿欧"
+        ],
+        "topics": [
+            "AI",
+            "AI Agent",
+            "Asian American",
+            "Aviation",
+            "Business",
+            "Chemicals",
+            "Consumer Goods",
+            "Decarbonation",
+            "Decarbonization",
+            "Digital",
+            "Economy and Trade",
+            "Education",
+            "Employment",
+            "Fashion",
+            "Financial Technology",
+            "Fintech",
+            "Food-meatless",
+            "Gen Z",
+            "Global banking",
+            "Global energy",
+            "Global insurance",
+            "Global macroeconomic",
+            "Global materials",
+            "Global private market",
+            "Global trade",
+            "Health",
+            "Human capital",
+            "Insurance",
+            "Low-altitude Economy",
+            "Luxury Goods",
+            "Maritime",
+            "Media",
+            "Medical Health",
+            "Net zero",
+            "New Energy Vehicle",
+            "Pet Food",
+            "Population",
+            "Private Equity",
+            "Real estate",
+            "Retail Digitalization",
+            "Small business",
+            "Smart Home",
+            "Sustainability",
+            "Technology",
+            "Travel"
+        ]
+    }
+}
+```
 
 ## 安装方法（对无编程基础用户友好）
 
@@ -61,7 +143,7 @@ nano .env     # Mac/Linux
 ```
 #### 5.配置MCP Server
 
-- VSCODE
+- VSCode.Cline
 > 注意：`<Your Project Root Directory!!!>`请替换成项目根目录。
 ```json
 {
@@ -90,21 +172,27 @@ run
 ikb_mcp_server.py
 ```
 
-## 解析私有文档
-> 0.1.0 就将就下，后面会完善这部分。😎
-1. 将pdf文档上传至 `library_files` 文件夹内
-2. 手动运行python脚本
+## 将私有文档加入ikb_mcp_server
+1. `.env` 可配置VLM模型和相关参数：
+    ```text
+    VLM_API_KEY=<API Key>
+    VLM_BASE_URL=<Base URL> # https://openrouter.ai/api/v1
+    VLM_MODEL_NAME=<Model Name> # qwen/qwen2.5-vl-72b-instruct:free
+    ```
+2. 将pdf文档上传至项目根目录下的 `library_files` 文件夹内
+3. 手动运行main.py
 
 ```Bash
 # cd 项目根目录
 # 激活虚拟环境
-uv run extractor.py
-# 等运行结束
-uv run recognizer.py
-# 等运行结束
+uv run main.py
+# [INFO]PDF extraction initialized | Files directory: library_files | Pages directory: library_pages
+# ... 请等待一会
+# [INFO]Processing completed. Success: xxx pages, Failed: 0 pages.
 # 此时数据已更新至数据库
 ```
 
+[LICENSE](https://github.com/v587d/InsightsLibrary/blob/main/LICENSE) 详情
 
 
 
