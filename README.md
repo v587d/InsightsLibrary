@@ -110,6 +110,14 @@
 
 >💡Pro tip: Stuck? Drag this page to an LLM client (like [DeepSeek](https://chat.deepseek.com/)) for step-by-step guidance. Actually, these instructions were written by DeepSeek too...
 
+### Installing via Smithery
+
+To install Insights Knowledge Base Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@v587d/insightslibrary):
+
+```bash
+npx -y @smithery/cli install @v587d/insightslibrary --client claude
+```
+
 #### Prerequisites: Python 3.12+ (Download from official website and ADD ENVIRONMENT PATH)
 
 Install UV:
