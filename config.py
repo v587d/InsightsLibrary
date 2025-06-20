@@ -27,5 +27,11 @@ class Config:
     llm_base_url = os.getenv("LLM_BASE_URL", "")
     llm_model_name = os.getenv("LLM_MODEL_NAME", "")
 
+    eb_model_local_path = os.getenv("EMBEDDING_MODEL_LOCAL_PATH", "eb_model")
+    eb_device = os.getenv("EMBEDDING_MODEL_DEVICE", "cpu").lower()
+    faiss_index_dir = os.getenv("FAISS_INDEX_DIR", "faiss_index")
+    os.makedirs(faiss_index_dir, exist_ok=True)
+
 config = Config()
+
 

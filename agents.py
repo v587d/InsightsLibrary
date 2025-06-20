@@ -192,6 +192,12 @@ class BaseRetriever(BaseAgent):
             return False
         return True
 
+    @staticmethod
+    def _path2url(file_path: str) -> str:
+        prefix_url = "http://www.smartapp.market/static/assets/insights/"
+        normalized_path = file_path.replace('\\', '/')
+        return prefix_url + normalized_path
+
 class FileRetriever(BaseRetriever):
     def __init__(self, max_results: int = 2):
         super().__init__(max_results)
@@ -213,9 +219,12 @@ class FileRetriever(BaseRetriever):
                 logger.error("No file records in database")
                 return {"results": [], "current_page": idx, "total_pages": 0, "total_matches": 0}
 
-            # Full path
+            # Full path or URL
             for file in files:
-                file["full_path"] = self._full_path(file.get("file_path"))
+                if file.get("uploader") != "admin":
+                    file["full_path"] = self._full_path(file.get("file_path"))
+                else:
+                    file["download_url"] = self._path2url(file.get("file_path"))
 
             # Process files with optimized filtering
             results = []
@@ -259,7 +268,8 @@ class FileRetriever(BaseRetriever):
                     "content": content,
                     "published_by": publisher,
                     "published_date": file.get("published_date"),
-                    "file_full_path": file.get("full_path"),
+                    "local_path": file.get("full_path", None),
+                    "download_url": file.get("download_url", None),
                     "matched_keywords": matched_kws
                 })
 
@@ -326,7 +336,10 @@ class ContentRetriever(BaseRetriever):
             all_files = self.file_model.get_all_files()
             file_info_map = {file["file_id"]: file for file in all_files}
             for file in file_info_map.values():
-                file["full_path"] = self._full_path(file.get("file_path"))
+                if file.get("uploader") != "admin":
+                    file["full_path"] = self._full_path(file.get("file_path"))
+                else:
+                    file["download_url"] = self._path2url(file.get("file_path"))
 
             # Process contents with optimized filtering
             results = []
@@ -378,7 +391,8 @@ class ContentRetriever(BaseRetriever):
                     "page_keywords": content_keywords,
                     "published_by": publisher,
                     "published_date": file_info.get("published_date"),
-                    "file_full_path": file_info.get("full_path"),
+                    "local_path": file_info.get("full_path", None),
+                    "download_url": file_info.get("download_url", None),
                     "matched_keywords": matched_kws
                 })
 

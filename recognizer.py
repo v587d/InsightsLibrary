@@ -170,6 +170,7 @@ class IMGRecognizer:
                 "created_at": now
             }
 
+
             existing_content = self.content_model.contents.get(
                 (self.content_model.query.file_id == file_id) &
                 (self.content_model.query.page_number == page_number)

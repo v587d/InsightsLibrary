@@ -338,6 +338,16 @@ class FileModel:
             logger.error(f"Failed to calculate MD5: {file_path}, error: {e}")
             raise IOError(f"MD5 calculation failed: {e}") from e
 
+    def get_files_by_ids(self, file_ids: List[str]) -> List[Dict]:
+        """Batch retrieve file records by file IDs using index."""
+        try:
+            doc_ids = [self.manager._file_index.get(fid) for fid in file_ids]
+            doc_ids = [did for did in doc_ids if did is not None]
+            return self.files.get(doc_ids=doc_ids)
+        except Exception as e:
+            logger.error(f"Failed to batch query files: {e}")
+            return []
+
 class ContentModel:
     """Model for content metadata storage."""
     def __init__(self):
@@ -470,17 +480,15 @@ class ContentModel:
             logger.error(f"Failed to delete contents: file_id: {file_id}, error: {e}")
             return 0
 
+    def get_contents_by_page_ids(self, page_ids: List[str]) -> List[Dict]:
+        """Batch retrieve content records by page IDs using index."""
+        try:
+            doc_ids = [self.manager._content_index.get(pid) for pid in page_ids]
+            doc_ids = [did for did in doc_ids if did is not None]
+            return self.contents.get(doc_ids=doc_ids)
+        except Exception as e:
+            logger.error(f"Failed to batch query contents: {e}")
+            return []
+
 if __name__ == "__main__":
-    # import time
-    # # Initialize models
-    # start_time = time.time()
-    # file_model = FileModel()
-    # content_model = ContentModel()
-    # file = file_model.get_file_by_path("library_files\\2024年中国奢侈品市场-逆水行舟，穿越周期[BAIN-20250121].pdf")
-    # # file = file_model.get_file_by_id("c6ab4950-89b5-48df-b853-cd76e431de0b")
-    # content = content_model.get_content_by_page_id("0d5dda73-1764-437b-8084-64872200a739")
-    # end_time = time.time()
-    # res = file["file_id"]
-    # print(res)
-    # print(end_time - start_time)
     pass

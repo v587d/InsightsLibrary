@@ -30,11 +30,11 @@
 ```JSON
 {
     "statistics": {
-        "total_files": 61,
-        "total_pages": 3031,
+        "total_files": 69,
+        "total_pages": 3758,
         "unique_publishers": 7,
-        "unique_topics": 45,
-        "last_updated": "2025-06-17T10:36:52.437453"
+        "unique_topics": 51,
+        "last_updated": "2025-06-18T20:09:57.012512"
     },
     "details": {
         "publishers": [
@@ -50,6 +50,7 @@
             "AI",
             "AI Agent",
             "Asian American",
+            "Auto",
             "Aviation",
             "Business",
             "Chemicals",
@@ -61,6 +62,7 @@
             "Education",
             "Employment",
             "Fashion",
+            "Finance",
             "Financial Technology",
             "Fintech",
             "Food-meatless",
@@ -71,12 +73,15 @@
             "Global macroeconomic",
             "Global materials",
             "Global private market",
+            "Global private markets",
             "Global trade",
             "Health",
             "Human capital",
             "Insurance",
+            "Investing",
             "Low-altitude Economy",
             "Luxury Goods",
+            "M&A",
             "Maritime",
             "Media",
             "Medical Health",
@@ -85,6 +90,7 @@
             "Pet Food",
             "Population",
             "Private Equity",
+            "Productivity",
             "Real estate",
             "Retail Digitalization",
             "Small business",
@@ -108,11 +114,12 @@
 ```BASH
 pip install uv
 ```
-#### 1. 克隆项目
+#### 1. 克隆项目（确定已安装git和git lfs）
 
 ```BASH
 git clone https://github.com/v587d/InsightsLibrary.git
 cd InsightsLibrary
+git lfs pull
 ```
 
 #### 2. 创建虚拟环境
@@ -130,7 +137,7 @@ source .venv/bin/activate
 #### 3. 安装核心依赖
 
 ```BASH
-uv pip install -e .  # 注意结尾的点，表示当前目录
+uv install .  # 注意结尾的点，表示当前目录
 ```
 
 #### 4. 创建环境变量（以备不时之需）
@@ -186,10 +193,21 @@ ikb_mcp_server.py
 # cd 项目根目录
 # 激活虚拟环境
 uv run main.py
-# [INFO]PDF extraction initialized | Files directory: library_files | Pages directory: library_pages
-# ... 请等待一会
-# [INFO]Processing completed. Success: xxx pages, Failed: 0 pages.
-# 此时数据已更新至数据库
+
+(InsightsLibrary) PS D:\Projects\mcp\InsightsLibrary> uv run main.py
+[INFO] extractor: PDF extraction initialized | Files directory: library_files | Pages directory: library_pages
+[INFO] extractor: Starting scan of directory: library_files
+[INFO] extractor: Found 69 PDF files
+[INFO] extractor: Scan completed | Total files: 69 | Processed: 0 | Failed: 0
+[INFO] recognizer: No pages to process.
+# 已更新数据库
+============================================================
+Confirm if you need to create text vector embeddings
+⚠️ This process may take approximately 20 minutes
+============================================================
+Create embeddings? (Enter Y or N): 
+# Y: 创建文本向量索引
+# N: 跳过文本向量，并退出main程序
 ```
 
 [LICENSE](https://github.com/v587d/InsightsLibrary/blob/main/LICENSE) 详情

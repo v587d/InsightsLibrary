@@ -15,6 +15,7 @@ test.py
 .query_db.py
 .python-version
 library_pages/
+library_files/
 
 # 补充虚拟环境别名（可选）
 venv/

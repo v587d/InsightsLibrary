@@ -16,7 +16,7 @@
 4. 💡Optimized `ikb_mcp_server.py`:
    - Added pagination functionality
    - Displayed local paths of referenced files
-5. Add MIT License(https://github.com/v587d/InsightsLibrary/pull/1#issuecomment-2969226661)
+5. 💡Add MIT License(https://github.com/v587d/InsightsLibrary/pull/1#issuecomment-2969226661)
 6. **📦 Overall compressed project package size reduced by approximately 50%**  
 7. 💡Streamline Private Document Handling  
 8. 💡Fixed other identified bugs
@@ -33,11 +33,11 @@
 ```JSON
 {
     "statistics": {
-        "total_files": 61,
-        "total_pages": 3031,
+        "total_files": 69,
+        "total_pages": 3758,
         "unique_publishers": 7,
-        "unique_topics": 45,
-        "last_updated": "2025-06-17T10:36:52.437453"
+        "unique_topics": 51,
+        "last_updated": "2025-06-18T20:09:57.012512"
     },
     "details": {
         "publishers": [
@@ -53,6 +53,7 @@
             "AI",
             "AI Agent",
             "Asian American",
+            "Auto",
             "Aviation",
             "Business",
             "Chemicals",
@@ -64,6 +65,7 @@
             "Education",
             "Employment",
             "Fashion",
+            "Finance",
             "Financial Technology",
             "Fintech",
             "Food-meatless",
@@ -74,12 +76,15 @@
             "Global macroeconomic",
             "Global materials",
             "Global private market",
+            "Global private markets",
             "Global trade",
             "Health",
             "Human capital",
             "Insurance",
+            "Investing",
             "Low-altitude Economy",
             "Luxury Goods",
+            "M&A",
             "Maritime",
             "Media",
             "Medical Health",
@@ -88,6 +93,7 @@
             "Pet Food",
             "Population",
             "Private Equity",
+            "Productivity",
             "Real estate",
             "Retail Digitalization",
             "Small business",
@@ -112,11 +118,12 @@ Install UV:
 pip install uv
 ```
 
-#### 1. Clone the project
+#### 1. Clone the project(Confirm successfully installed Git and Git LFS)
 
 ```BASH
 git clone https://github.com/v587d/InsightsLibrary.git
 cd InsightsLibrary
+git lfs pull
 ```
 
 #### 2. Create virtual environment
@@ -134,7 +141,7 @@ source .venv/bin/activate
 #### 3. Install core dependencies
 
 ```BASH
-uv pip install -e .  # Note the trailing dot indicating current directory
+uv install .  # Note the trailing dot indicating current directory
 ```
 
 #### 4. Create environment variables (for future needs)
@@ -188,10 +195,20 @@ ikb_mcp_server.py
 # Navigate to the project root directory
 # Activate the virtual environment
 uv run main.py
-# [INFO]PDF extraction initialized | Files directory: library_files | Pages directory: library_pages
-# ... Please waiting for a while
-# [INFO]Processing completed. Success: xxx pages, Failed: 0 pages.
+(InsightsLibrary) PS D:\Projects\mcp\InsightsLibrary> uv run main.py
+[INFO] extractor: PDF extraction initialized | Files directory: library_files | Pages directory: library_pages
+[INFO] extractor: Starting scan of directory: library_files
+[INFO] extractor: Found 69 PDF files
+[INFO] extractor: Scan completed | Total files: 69 | Processed: 0 | Failed: 0
+[INFO] recognizer: No pages to process.
 # Data has been updated to the database
+============================================================
+Confirm if you need to create text vector embeddings
+⚠️ This process may take approximately 20 minutes
+============================================================
+Create embeddings? (Enter Y or N): 
+# Y: create text vector embeddings
+# N: Skip text vector embeddings and exit program
 ```
 
 ## License
