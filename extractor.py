@@ -1,7 +1,8 @@
 import os
 import shutil
-from datetime import datetime
 import io
+import re
+from datetime import datetime
 from typing import List
 
 import fitz  # PyMuPDF
@@ -202,8 +203,10 @@ class PDFExtractor:
             List of generated image paths
         """
         # Create subdirectory based on filename
-        pdf_name = os.path.splitext(os.path.basename(pdf_path))[0]
-        pdf_output_dir = os.path.join(output_dir, pdf_name)
+        raw_name = os.path.splitext(os.path.basename(pdf_path))[0]
+        clean_name = re.sub(r'\s+$', '', raw_name)  # remove space in the end of path name
+        clean_name = re.sub(r'[<>:"/\\|?*]', '_', clean_name) # remove illegal characters
+        pdf_output_dir = os.path.join(output_dir, clean_name)
         os.makedirs(pdf_output_dir, exist_ok=True)
 
         page_paths = []

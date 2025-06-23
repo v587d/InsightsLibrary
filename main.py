@@ -2,7 +2,6 @@ import asyncio
 
 from extractor import PDFExtractor
 from recognizer import IMGRecognizer
-from embedder import Embedder
 
 async def main():
     ext = PDFExtractor()
@@ -20,6 +19,7 @@ async def main():
         choice = input("Create embeddings? (Enter Y or N): ").strip().upper()
         if choice == 'Y':
             print("Starting text vector embedding creation, please wait...")
+            from embedder import Embedder
             em = Embedder()
             em.precalculation()
             print("Embedding creation completed!")

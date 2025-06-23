@@ -5,36 +5,37 @@
 >🍭一个免费的、即插即用的知识库。内置10,000+份高质量洞察报告(Research Report、Insights Report)、封装成MCP Server、本地数据安全存储。
 
 ⚠️⚠️ 本项目所有采集的研报，均来自各研报官网免费资源。⚠️⚠️
-## 特点
-1. 🍾无需任何配置，主打一个即插即用。若您需解析私有文档，`.env` 可配置VLM模型和相关参数，如：`VLM_MODEL_NAME=qwen2.5-vl-72b-instruct`。
-2. 🦉永久免费，无需考虑浪费心智收集报告资源。欢迎大家通过`issue`分享可靠的、无版权纠纷研报资源。
-3. 📢承诺至少每周一次研报资源，但改bug就看个人心情了，毕竟我不是工程师🤭。
 
-## 截至于6月17日的优化
-1. 💡优化`models.py`: 数据查询效率提升1,000%
-2. 💡优化`extractor.py`: 略微提升PDF抽取效率
-3. 💡优化`recognizer.py`: 图片理解效率提升50%
-4. 💡优化`ikb_mcp_server.py`: 
-   - 新增分页
-   - 显示引用文件本地所在路径
-5. 💡新增 MIT License
-6. **📦项目整体压缩包体积下降约 50%**
-7. 💡简化处理私有文档流程
-8. 💡修复其他已发现的bugs
+## 特点
+1. 🍾无需任何配置，主打一个即插即用。
+2. 🚀内置`Qwen3-Embedding-0.6B`嵌入模型，可通过向量检索相关报告。📢亦可通过关键词检索报告详情。
+3. 🍥目前已收录McKinsey、PwC、BAIN等知名咨询机构洞察报告100+篇，6,000+报告单页，覆盖70+种主题。
+4. 💎可在`MCP Client`中实时在线浏览报告全文。
+5. 🎉极速查询。所有`Function_call`返回时长一般不超过1秒，其中关键词精准查询返回时长在150ms以内。
+6. 🎨可将本地私有文档粘贴至`library_files`文件夹中（无项目没有该文件夹请自行创建，注意文件夹名称不能有误！）。并在`.env` 配置VLM模型和相关参数，如：`VLM_MODEL_NAME=qwen2.5-vl-72b-instruct`等，即可实现本地文档提取、解析、识别。
+7. 🦉永久免费，无需考虑浪费心智收集报告资源。欢迎大家通过`issue`分享可靠的、无版权纠纷研报资源。
+8. 🔔承诺至少每周一次研报资源，但改bug就看个人心情了，毕竟我不是工程师🤭。
+
+## 截至于6月22日的优化
+1. 新建`embedder.py`，实现基于本地模型`Qwen3-Embedding-0.6B`的文本向量化索引，并存于本地`fass_index`文件夹。
+2. 修改`main.py`，实现`PDFExtractor` -> `IMGRecognizer` -> `Embedder` (可选) 业务流程闭环。
+3. 新增`@mcp.tool(): get_similar_content_by_rag`，该方法用于通过计算用户输入与文档内容向量之间相似度，进而找到最相似的文档内容，即RAG。
+4. 由admin创建的所有报告文件，均支持在线浏览。因此原项目中`library_files`文件夹及所有文件均从项目中移除。项目包体积再度缩小。
+5. 新增2000+页报告。
 
 ## 未来工作方向
-1. 加入嵌入模型，并整合进`@mcp.tool()`
-2. 持续更新报告
+1. 持续更新报告
+2. 优化提示词
 
 ## 最新报告概况
 ```JSON
 {
     "statistics": {
-        "total_files": 69,
-        "total_pages": 3758,
+        "total_files": 113,
+        "total_pages": 6526,
         "unique_publishers": 7,
-        "unique_topics": 51,
-        "last_updated": "2025-06-18T20:09:57.012512"
+        "unique_topics": 76,
+        "last_updated": "2025-06-23T08:32:01.350555"
     },
     "details": {
         "publishers": [
@@ -49,21 +50,29 @@
         "topics": [
             "AI",
             "AI Agent",
+            "Africa",
+            "Aftermarket",
             "Asian American",
             "Auto",
             "Aviation",
+            "Beauty",
             "Business",
+            "Chemical industry",
             "Chemicals",
             "Consumer Goods",
             "Decarbonation",
             "Decarbonization",
             "Digital",
+            "Economy",
             "Economy and Trade",
             "Education",
             "Employment",
+            "Energy",
+            "Europe",
             "Fashion",
             "Finance",
             "Financial Technology",
+            "Financial service",
             "Fintech",
             "Food-meatless",
             "Gen Z",
@@ -75,32 +84,50 @@
             "Global private market",
             "Global private markets",
             "Global trade",
+            "Grocery",
+            "Grocery retail",
             "Health",
+            "Healthcare",
             "Human capital",
             "Insurance",
             "Investing",
+            "Labor market",
+            "Latinos",
             "Low-altitude Economy",
             "Luxury Goods",
             "M&A",
             "Maritime",
             "Media",
             "Medical Health",
+            "Medtech",
             "Net zero",
             "New Energy Vehicle",
+            "New era",
+            "Payments",
             "Pet Food",
             "Population",
             "Private Equity",
+            "Private market",
             "Productivity",
+            "Quantum",
             "Real estate",
             "Retail Digitalization",
+            "Retailers",
+            "Risk",
             "Small business",
             "Smart Home",
+            "Sporting goods",
             "Sustainability",
+            "Sustainable",
             "Technology",
-            "Travel"
+            "Travel",
+            "United Kingdom",
+            "Wealth management",
+            "Workplace"
         ]
     }
 }
+
 ```
 
 ## 安装方法（对无编程基础用户友好）
@@ -212,6 +239,16 @@ Create embeddings? (Enter Y or N):
 
 [LICENSE](https://github.com/v587d/InsightsLibrary/blob/main/LICENSE) 详情
 
-
+## 截至于6月17日的优化
+1. 💡优化`models.py`: 数据查询效率提升1,000%
+2. 💡优化`extractor.py`: 略微提升PDF抽取效率
+3. 💡优化`recognizer.py`: 图片理解效率提升50%
+4. 💡优化`ikb_mcp_server.py`: 
+   - 新增分页
+   - 显示引用文件本地所在路径
+5. 💡新增 MIT License
+6. **📦项目整体压缩包体积下降约 50%**
+7. 💡简化处理私有文档流程
+8. 💡修复其他已发现的bugs
 
 

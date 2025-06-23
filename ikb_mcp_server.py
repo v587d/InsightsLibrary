@@ -20,17 +20,13 @@ async def search_report_profile(
         page_index: int = 1
 
 ):
-    """该方法用于查询多条件组合的报告概况。LLM需根据用户输入的消息(user_message)提炼出以下参数。
+    """该方法用于查询多条件组合的报告整体概况。LLM需根据用户输入的消息(user_message)提炼出以下参数。
     ️⚠️注意：当LLM引用该方法返回的结果时，必须用markdown格式明确、醒目告知用户引自哪篇报告和具体访问地址！
     比如“**观点引自《Open source technology in the age of AI》。(查看完整报告)[<如果"download_url"不为空，填入download_url>]**”
     ！！！注意每份报告单独列举 download_url，不要笼统指向某一个可能不存在的地址。
 
     参数：
         keywords: List[str] = None, 整篇报告的关键词。
-        ⚠️注意：
-            - 将每个关键词自动翻译为中英双语
-            - 例如用户输入"帮我查询下科技上市公司前景哈？" → 应转换为["科技", "technology", "上市公司", "publicly listed company"， "前景", "prospect"]
-
         title: str = "", 报告标题包含词。
         content: str = "", 报告内容包含词。
         publisher: str = "", 报告发布者。
@@ -87,10 +83,6 @@ async def search_content_detail(
 
     参数：
         keywords: List[str] = None, 报告详情页的关键词。
-            ⚠️注意：
-            - 将每个关键词自动翻译为中英双语
-            - 例如用户输入"帮我查询下科技上市公司前景哈？" → 应转换为["科技", "technology", "上市公司", "publicly listed company"， "前景", "prospect"]
-        
         title: str = "", 报告详情页标题包含词。
         content: str = "", 报告详情页内容包含词。
         publisher: str = "", 报告发布者。
