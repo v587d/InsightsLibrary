@@ -14,12 +14,8 @@
 7. 🦉 Permanently *free—no* wasted effort collecting reports. Share reliable, copyright-compliant resources via issues.
 8. 🔔 Commit to *weekly report updates*; bug fixes depend on personal whim (I'm not an engineer 🤭).
 
-## Optimizations as of June 22
-1. Added `embedder.py`: Implements text vectorization indexing via local Qwen3-Embedding-0.6B model, stored in faiss_index.
-2. Modified `main.py`: Closed-loop workflow *PDFExtractor → IMGRecognizer → Embedder (optional)*.
-3. New `@mcp.tool(): get_similar_content_by_rag`: Finds most similar document content via vector similarity (RAG).
-4. All admin-uploaded reports now support online viewing → Removed library_files folder to reduce project size.
-5. Added **2000+** report pages.
+## Optimizations as of June 30
+1. Added **2000+** report pages.
 
 ## Future Directions
 1. Continuous report updates.
@@ -29,23 +25,26 @@
 ```JSON
 {
     "statistics": {
-        "total_files": 113,
-        "total_pages": 6526,
-        "unique_publishers": 7,
-        "unique_topics": 76,
-        "last_updated": "2025-06-23T08:32:01.350555"
+        "total_files": 174,
+        "total_pages": 9320,
+        "unique_publishers": 9,
+        "unique_topics": 93,
+        "last_updated": "2025-06-30T10:08:35.928329"
     },
     "details": {
         "publishers": [
+            "",
             "Accenture",
             "BAIN",
             "BCG",
             "CBS",
+            "Deloite",
             "McKinsey",
             "PWC",
             "亿欧"
         ],
         "topics": [
+            "",
             "AI",
             "AI Agent",
             "Africa",
@@ -57,16 +56,21 @@
             "Business",
             "Chemical industry",
             "Chemicals",
+            "Chinese banking",
+            "Chinese securities",
             "Consumer Goods",
             "Decarbonation",
             "Decarbonization",
             "Digital",
+            "ESG",
             "Economy",
             "Economy and Trade",
             "Education",
+            "Electric two wheelers",
             "Employment",
             "Energy",
             "Europe",
+            "FMCG",
             "Fashion",
             "Finance",
             "Financial Technology",
@@ -87,12 +91,15 @@
             "Health",
             "Healthcare",
             "Human capital",
+            "Hydrogen",
             "Insurance",
             "Investing",
+            "Investment management",
             "Labor market",
             "Latinos",
             "Low-altitude Economy",
             "Luxury Goods",
+            "Luxury goods",
             "M&A",
             "Maritime",
             "Media",
@@ -101,30 +108,39 @@
             "Net zero",
             "New Energy Vehicle",
             "New era",
+            "Packing",
             "Payments",
             "Pet Food",
             "Population",
+            "Power",
             "Private Equity",
             "Private market",
             "Productivity",
             "Quantum",
             "Real estate",
+            "Retail",
             "Retail Digitalization",
             "Retailers",
             "Risk",
             "Small business",
             "Smart Home",
+            "Smart hospital",
             "Sporting goods",
             "Sustainability",
             "Sustainable",
+            "Tax-free",
             "Technology",
             "Travel",
+            "Truck",
             "United Kingdom",
+            "VSOC",
             "Wealth management",
-            "Workplace"
+            "Workplace",
+            "连锁经营"
         ]
     }
 }
+
 
 ```
 
@@ -248,3 +264,10 @@ This project is licensed under the MIT License. See the [LICENSE](https://github
 6. **📦 Overall compressed project package size reduced by approximately 50%**  
 7. 💡Streamline Private Document Handling  
 8. 💡Fixed other identified bugs
+
+## Optimizations as of June 22
+1. Added `embedder.py`: Implements text vectorization indexing via local Qwen3-Embedding-0.6B model, stored in faiss_index.
+2. Modified `main.py`: Closed-loop workflow *PDFExtractor → IMGRecognizer → Embedder (optional)*.
+3. New `@mcp.tool(): get_similar_content_by_rag`: Finds most similar document content via vector similarity (RAG).
+4. All admin-uploaded reports now support online viewing → Removed library_files folder to reduce project size.
+5. Added **2000+** report pages.

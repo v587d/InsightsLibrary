@@ -16,12 +16,8 @@
 7. 🦉永久免费，无需考虑浪费心智收集报告资源。欢迎大家通过`issue`分享可靠的、无版权纠纷研报资源。
 8. 🔔承诺至少每周一次研报资源，但改bug就看个人心情了，毕竟我不是工程师🤭。
 
-## 截至于6月22日的优化
-1. 新建`embedder.py`，实现基于本地模型`Qwen3-Embedding-0.6B`的文本向量化索引，并存于本地`fass_index`文件夹。
-2. 修改`main.py`，实现`PDFExtractor` -> `IMGRecognizer` -> `Embedder` (可选) 业务流程闭环。
-3. 新增`@mcp.tool(): get_similar_content_by_rag`，该方法用于通过计算用户输入与文档内容向量之间相似度，进而找到最相似的文档内容，即RAG。
-4. 由admin创建的所有报告文件，均支持在线浏览。因此原项目中`library_files`文件夹及所有文件均从项目中移除。项目包体积再度缩小。
-5. 新增2000+页报告。
+## 截至于6月30日的优化
+1. 新增2000+页报告。
 
 ## 未来工作方向
 1. 持续更新报告
@@ -31,23 +27,26 @@
 ```JSON
 {
     "statistics": {
-        "total_files": 113,
-        "total_pages": 6526,
-        "unique_publishers": 7,
-        "unique_topics": 76,
-        "last_updated": "2025-06-23T08:32:01.350555"
+        "total_files": 174,
+        "total_pages": 9320,
+        "unique_publishers": 9,
+        "unique_topics": 93,
+        "last_updated": "2025-06-30T10:08:35.928329"
     },
     "details": {
         "publishers": [
+            "",
             "Accenture",
             "BAIN",
             "BCG",
             "CBS",
+            "Deloite",
             "McKinsey",
             "PWC",
             "亿欧"
         ],
         "topics": [
+            "",
             "AI",
             "AI Agent",
             "Africa",
@@ -59,16 +58,21 @@
             "Business",
             "Chemical industry",
             "Chemicals",
+            "Chinese banking",
+            "Chinese securities",
             "Consumer Goods",
             "Decarbonation",
             "Decarbonization",
             "Digital",
+            "ESG",
             "Economy",
             "Economy and Trade",
             "Education",
+            "Electric two wheelers",
             "Employment",
             "Energy",
             "Europe",
+            "FMCG",
             "Fashion",
             "Finance",
             "Financial Technology",
@@ -89,12 +93,15 @@
             "Health",
             "Healthcare",
             "Human capital",
+            "Hydrogen",
             "Insurance",
             "Investing",
+            "Investment management",
             "Labor market",
             "Latinos",
             "Low-altitude Economy",
             "Luxury Goods",
+            "Luxury goods",
             "M&A",
             "Maritime",
             "Media",
@@ -103,30 +110,39 @@
             "Net zero",
             "New Energy Vehicle",
             "New era",
+            "Packing",
             "Payments",
             "Pet Food",
             "Population",
+            "Power",
             "Private Equity",
             "Private market",
             "Productivity",
             "Quantum",
             "Real estate",
+            "Retail",
             "Retail Digitalization",
             "Retailers",
             "Risk",
             "Small business",
             "Smart Home",
+            "Smart hospital",
             "Sporting goods",
             "Sustainability",
             "Sustainable",
+            "Tax-free",
             "Technology",
             "Travel",
+            "Truck",
             "United Kingdom",
+            "VSOC",
             "Wealth management",
-            "Workplace"
+            "Workplace",
+            "连锁经营"
         ]
     }
 }
+
 
 ```
 
@@ -251,4 +267,9 @@ Create embeddings? (Enter Y or N):
 7. 💡简化处理私有文档流程
 8. 💡修复其他已发现的bugs
 
-
+## 截至于6月22日的优化
+1. 新建`embedder.py`，实现基于本地模型`Qwen3-Embedding-0.6B`的文本向量化索引，并存于本地`fass_index`文件夹。
+2. 修改`main.py`，实现`PDFExtractor` -> `IMGRecognizer` -> `Embedder` (可选) 业务流程闭环。
+3. 新增`@mcp.tool(): get_similar_content_by_rag`，该方法用于通过计算用户输入与文档内容向量之间相似度，进而找到最相似的文档内容，即RAG。
+4. 由admin创建的所有报告文件，均支持在线浏览。因此原项目中`library_files`文件夹及所有文件均从项目中移除。项目包体积再度缩小。
+5. 新增2000+页报告。
