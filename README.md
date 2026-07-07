@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/v587d-insightslibrary-badge.png)](https://mseep.ai/app/v587d-insightslibrary)
+
 # Insights Knowledge Base(IKB) MCP Server
 [>>>中文版](https://github.com/v587d/InsightsLibrary/blob/main/README_CN.md)
 > 🍭A free, plug-and-play knowledge base. Built-in with 10,000+ high-quality insights reports, packaged as MCP Server, and secure local data storage.
